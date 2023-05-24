@@ -16,5 +16,11 @@ def open_csv(file_name):
 
 
 files_list = [open_csv(data_folder+n) for n in files]
-#print(files_list)
-print(f'Una lista de diccionarios:\n{files_list}')
+#print(f'Una lista de diccionarios:\n{files_list}')
+
+longitudes = [len(lista) for n, lista in enumerate(files_list)]
+print(f'longitudes: {longitudes}')
+
+filas_vacias = [{n_row: row for n_row, row in enumerate(lista)} for n, lista in enumerate(files_list)]
+otras_longitudes = [len(lista_vacios) for n, lista_vacios in enumerate(filas_vacias)]
+print(f'filas vacias: {otras_longitudes}')
