@@ -2,6 +2,8 @@ import csv
 import os
 import matplotlib.pyplot as plt
 import pandas as pd
+import datetime
+from collections import Counter
 
 data_folder = "data/"
 
@@ -24,13 +26,22 @@ complete_list = [[row for n_row, row in enumerate(mlista) if not row['Fecha'] ==
 result = [a for b in complete_list for a in b]
 
 df = pd.DataFrame(result)
-df['Hora'] = df['Hora'].str.replace("h","")
-df['Fecha'] = pd.to_datetime(df['Fecha'], format="%d/%m/%Y")
-df['Hora'] = pd.to_datetime(df['Hora'], format="%H.%M")
+df['Hora'] = df['Hora'].str.replace("h", "")
+df['Fecha'] = pd.to_datetime(df['Fecha'], format="%d/%m/%Y").dt.date
 
-print(df.head())
-print(df.dtypes)
+df['Hora'] = pd.to_datetime(df['Hora'], format="%H.%M").dt.time
+df_sorted = df.sort_values(by=['Fecha'])
+df_sorted = df_sorted.reset_index(drop=True)
 
+a = df_sorted['Fecha'].duplicated()
+df_sorted['n'] = a
+df_sorted = df_sorted.drop('Hora', axis=1)
+c = df_sorted.groupby('Fecha').count()
+
+print(c)
+
+c.index = pd.to_datetime(c.index)
+#c = c.interpolate(method='cubic')
 plt.figure(1)
-plt.plot(df['Fecha'], df['Hora'])
+plt.plot(c, color='green', marker='o', linestyle='dashed', linewidth=2, markersize=5)
 plt.show()
